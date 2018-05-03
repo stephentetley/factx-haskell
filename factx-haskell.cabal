@@ -1,0 +1,45 @@
+name:             factx-haskell
+version:          0.1.0
+license:          BSD3
+license-file:     LICENSE
+copyright:        Stephen Tetley <stephen.tetley@gmail.com>
+maintainer:       Stephen Tetley <stephen.tetley@gmail.com>
+homepage:         https://github.com/stephentetley/factx-haskell
+category:         Text
+synopsis:         Write Prolog facts
+description:
+  . 
+  Small library to generate Prolog facts from F#  
+  .
+
+build-type:         Simple
+stability:          half baked
+cabal-version:      >= 1.2
+
+extra-source-files:
+  demo/Demo01.hs
+
+
+library
+  hs-source-dirs:     src
+  
+  build-depends:      
+    base,
+    text
+
+  exposed-modules:
+    FactX.FactOutput
+    
+
+  other-modules:
+         
+  extensions:
+    
+
+  ghc-options:
+  
+  includes: 
+  
+
+  
+  
