@@ -21,6 +21,14 @@ module FactX.FactOutput
   , runFactOutput
   , tellComment
   , tellCommentString
+  , TermOutput
+  , tellFact
+  , namedAtom
+  , quotedAtom
+  , string
+  , int
+  , bool
+
   ) where
 
 import Data.Text.Lazy.Builder
@@ -84,3 +92,38 @@ tellCommentString :: String -> FactOutput ()
 tellCommentString str = mapM_ (tellLineString . mkcomment) $ lines str
   where
     mkcomment s = '%':' ':s
+
+
+newtype TermOutput = TermOutput { getTermOutput :: Builder }
+
+tellFact :: TermOutput -> [TermOutput] -> FactOutput () 
+tellFact hd xs = 
+    FactOutput $ \s -> (s <> fact <> singleton '\n', ())
+  where
+    fact = getTermOutput hd <> singleton '(' <> mkBody xs <> singleton ')' <> singleton '.'    
+    mkBody []       = mempty
+    mkBody [t]      = getTermOutput t
+    mkBody (t:ts)   = getTermOutput t <> singleton ',' <> singleton ' ' <> mkBody ts
+
+
+namedAtom       :: String -> TermOutput 
+namedAtom s     = TermOutput $ fromString s
+
+
+quotedAtom      :: String -> TermOutput 
+quotedAtom s    = TermOutput $ singleton '\'' <> fromString (safe s) <> singleton '\''
+  where
+    safe []        = ""
+    safe ('\'':cs) = '\'' : '\'' : safe cs
+    safe (c:cs)    = c : safe cs
+
+bool            :: Bool -> TermOutput
+bool v          = TermOutput $ fromString $ if v then "true" else "false"
+
+
+string          :: String -> TermOutput 
+string s        = TermOutput $ singleton '"' <> fromString s <> singleton '"'
+
+int             :: String -> TermOutput 
+int i           = TermOutput $ fromString $ show i
+
